@@ -9,19 +9,23 @@ public class Solution {
             int num = nums[i];
             int numValue = 0;
 
-            int power = 0;
-            while(num > 0){
-                int remainder = num % 10;
+            if(num == 0) {
+                numValue = mapping[num];
+            } else {
+                int power = 0;
+                while(num > 0){
+                    int remainder = num % 10;
 
-                // set up for the next iteration
-                num -= remainder; 
-                num /= 10;
+                    // set up for the next iteration
+                    num -= remainder; 
+                    num /= 10;
 
-                // perform mapping
-                numValue += mapping[remainder] * (int)Math.Pow(10, power);
+                    // perform mapping
+                    numValue += mapping[remainder] * (int)Math.Pow(10, power);
 
-                // increase power
-                power++;
+                    // increase power
+                    power++;
+                }
             }
 
             numsValues[i] = numValue;
@@ -30,7 +34,22 @@ public class Solution {
         var listNumsValues = new List<int>(numsValues);
         listNumsValues.Sort();
 
+        int[] arrangedNums = new int[nums.Length];
+        for(int i = 0; i < arrangedNums.Length; i++) {
+            arrangedNums[i] = -1;
+        }
 
-        return listNumsValues.ToArray();
+        for (int i = 0; i < nums.Length; i++) {
+            int index = listNumsValues.IndexOf(numsValues[i]);
+
+            while(arrangedNums[index] != -1) {
+                index++;
+            }
+            
+            arrangedNums[index] = nums[i];
+        }
+
+
+        return arrangedNums;
     }
 }
