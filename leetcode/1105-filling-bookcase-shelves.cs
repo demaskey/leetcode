@@ -2,23 +2,34 @@ namespace leetcode.s1105;
 
 public class Solution {
     public int MinHeightShelves(int[][] books, int shelfWidth) {
-        int minHeight = 0;
+        var memo = new Dictionary<int, int>();
+        return MinHeight(books, shelfWidth, 0, memo);
+    }
 
-        int shelfWidthUsed = 0;
-        int shelfHeight = 0;
-        for(int i = 0; i < books.Length; i++) {
-            // can the shelf width fit the next book?
-            if(shelfWidthUsed + books[i][0] <= shelfWidth) {
-                // add the book to the shelf
-                shelfWidthUsed += books[i][0];
-                shelfHeight = shelfHeight > books[i][1] ? shelfHeight : books[i][1];
-
-            } else {
-                // have to add another shelf
-
-            }
+    private int MinHeight(int[][] books, int shelfWidth, int index, Dictionary<int, int> memo) {
+        if(index == books.Length) {
+            return 0;
         }
 
+        if(memo.ContainsKey(index)) {
+            return memo[index];
+        }
+
+        int totalThickness = 0;
+        int maxHeight = 0;
+        int minHeight = int.MaxValue;
+
+        for (int i = index; i < books.Length; i++) {
+            totalThickness += books[i][0];
+            if(totalThickness > shelfWidth) {
+                break;
+            }
+
+            maxHeight = Math.Max(maxHeight, books[i][1]);
+            minHeight = Math.Min(minHeight, maxHeight + MinHeight(books, shelfWidth, i + 1, memo));
+        }
+
+        memo[index] = minHeight;
         return minHeight;
     }
 }
